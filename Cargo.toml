@@ -1,0 +1,5 @@
+[package]
+name = "mockbob"
+version = "1.0.0"
+authors = ["Jonas <me@jbrn.eu>"]
+edition = "2018"
