@@ -14,6 +14,12 @@ mockbob Mock this for me!
 echo "some input" | mockbob
 ```
 
+The mocking strategy can also be customized. For mor information, please run
+
+```
+mockbob --help
+```
+
 ### Build
 
 ```sh
