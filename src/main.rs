@@ -8,7 +8,7 @@ fn mock(input: &str) -> String {
         .enumerate()
         .map(|(index, char)| {
             if index % 2 != 0 {
-                char.to_ascii_uppercase()
+                char.to_uppercase()
             } else {
                 char
             }
