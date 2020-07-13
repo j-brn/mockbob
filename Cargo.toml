@@ -1,5 +1,9 @@
 [package]
 name = "mockbob"
-version = "1.0.0"
-authors = ["Jonas <me@jbrn.eu>"]
+version = "2.0.0"
+authors = ["j-brn <me@jbrn.eu>"]
 edition = "2018"
+
+[dependencies]
+mockbob-core = { path = "mockbob-core" }
+structopt = "0.3"
