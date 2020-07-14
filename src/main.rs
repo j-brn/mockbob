@@ -6,11 +6,17 @@ fn mock(input: &str) -> String {
         .to_lowercase()
         .chars()
         .enumerate()
-        .map(|(index, char)| {
-            if index % 2 != 0 {
-                char.to_uppercase()
+        .map(|(index, c)| {
+            if c.is_alphanumeric() {
+                if index % 2 != 0 {
+                    let v: Vec<char> = c.to_uppercase().collect();
+                    v.into_iter().collect::<String>()
+                } else {
+                    let v: Vec<char> = c.to_lowercase().collect();
+                    v.into_iter().collect::<String>()
+                }
             } else {
-                char
+                c.to_string()
             }
         })
         .collect()
