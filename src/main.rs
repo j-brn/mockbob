@@ -2,6 +2,7 @@ use std::collections::HashSet;
 use std::io::{stdin, BufRead};
 use std::iter::FromIterator;
 
+use clipboard::{ClipboardContext, ClipboardProvider};
 use mockbob_core::{Mocker, MockingStrategy, StrategyMocker};
 use structopt::StructOpt;
 
@@ -32,9 +33,13 @@ struct Cli {
         help = "The actual text to mock. If missing, mockbob-core-cli tries to read from stdin"
     )]
     pub input: Vec<String>,
+    #[structopt(help = "Use the clipboard as input", long = "from_clipboard")]
+    pub from_clipboard: bool,
+    #[structopt(help = "Copy the output to the clipboard", long = "to_clipboard")]
+    pub to_clipboard: bool,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::from_args();
 
     let mocker = {
@@ -58,14 +63,31 @@ fn main() {
         StrategyMocker::new(strategy, blacklist)
     };
 
-    if !cli.input.is_empty() {
-        let input = cli.input.join(" ");
-        println!("{}", mocker.mock(&input));
+    let mut clipboard: ClipboardContext = ClipboardProvider::new().unwrap();
+
+    let input = if cli.from_clipboard {
+        vec![clipboard.get_contents()?]
+    } else if !cli.input.is_empty() {
+        cli.input
     } else {
         stdin()
             .lock()
             .lines()
-            .map(|line| mocker.mock(&line.unwrap()))
-            .for_each(|mocked| println!("{}", mocked));
+            .filter_map(|line| line.ok())
+            .collect::<Vec<String>>()
+    };
+
+    let output = input
+        .iter()
+        .map(|line| mocker.mock(line))
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    if cli.to_clipboard {
+        clipboard.set_contents(output.clone())?;
     }
+
+    println!("{}", output);
+
+    Ok(())
 }
