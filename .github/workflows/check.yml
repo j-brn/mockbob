@@ -1,0 +1,23 @@
+name: check
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+      - name: format
+        run: cargo fmt -- --check
+      - name: clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: test
+        run: cargo test --all
