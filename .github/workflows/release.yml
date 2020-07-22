@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: release for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: mockbob
+            asset_name: mockbob-linux-amd64
+          - os: windows-latest
+            artifact_name: mockbob.exe
+            asset_name: mockbob-windows-amd64
+          - os: macos-latest
+            artifact_name: mockbob
+            asset_name: mockbob-macos-amd64
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: cargo build --release --locked
+      - name: strip binary
+        run: strip target/release/${{ matrix.artifact_name }}
+      - name: upload binary to release
+        uses: svenstaro/upload-release/action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tags: ${{ github.ref }}
