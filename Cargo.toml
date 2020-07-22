@@ -1,10 +1,13 @@
 [package]
 name = "mockbob"
-version = "2.0.0"
+version = "3.0.0"
 authors = ["j-brn <me@jbrn.eu>"]
 edition = "2018"
+
+[features]
+clipboard = ["copypasta-ext"]
 
 [dependencies]
 mockbob-core = { path = "mockbob-core" }
 structopt = "0.3"
-clipboard = "0.5"
+copypasta-ext = { version = "0.3", optional = true }
