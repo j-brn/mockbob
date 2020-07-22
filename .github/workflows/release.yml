@@ -12,6 +12,7 @@ jobs:
   release:
     name: release for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       matrix:
         include:
